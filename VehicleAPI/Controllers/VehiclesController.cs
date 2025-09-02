@@ -25,5 +25,42 @@ namespace VehicleAPI.Controllers
             }    
             return Ok(result.ToList());
         }
+        [HttpGet("{id:guid}")]
+        public ActionResult<Vehicle> GetById(Guid id)
+        {
+            var vehicle = Data.FirstOrDefault(v => v.Id == id);
+            if (vehicle == null) return NotFound();
+            return Ok(vehicle);
+        }
+
+        [HttpPost]
+        public ActionResult<Vehicle> Create(Vehicle vehicle)
+        {
+            Data.Add(vehicle);
+            return CreatedAtAction(nameof(GetById), new { id = vehicle.Id }, vehicle);
+        }
+
+        [HttpPut("{id:guid}")]
+        public IActionResult Update(Guid id, Vehicle vehicle)
+        {
+            var existing = Data.FirstOrDefault(v => v.Id == id);
+            if (existing == null) return NotFound();
+                
+            existing.Make = vehicle.Make;
+            existing.Year = vehicle.Year;
+            existing.Model = vehicle.Model;
+                
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+
+        public IActionResult Delete(Guid id)
+        {
+            var existing = Data.FirstOrDefault(v => v.Id == id);
+            if (existing == null) return NotFound();
+            Data.Remove(existing);
+            return NoContent();
+        }
     }
 }
